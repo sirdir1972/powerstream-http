@@ -1,19 +1,19 @@
-// ver 0.1
+// ver 0.11
 // (c) 2025 sirdir
 
 const axios = require('axios');
 const crypto = require('crypto');
 
 var ConfigData = {
-    PSIgnore: [{ serial : ''}], // ignore this serial
-    D2M: [ { serial : ''}], // serial of d2m
+    PSIgnore: [{ serial : ''}],
+    D2M: [ { serial : ''}],
     statePath: "0_userdata.0.ecoflow_public_api.",
     demandState: "0_userdata.0.sumpower.actualDemand",
     DoSleepFrom: 24,
     DoSleepTo: 8
 }
 const url = 'https://api-e.ecoflow.com/iot-open/sign/device/quota';
-const key = 'YOUR SECRET KEY';
+const key = 'YOUR KEY';
 const secret = 'YOUR SECRET';
 
 var powerStreamSerials = []
@@ -204,7 +204,7 @@ function updateObjectStatus(response,sn) {
   const pv2InputWatts = status['20_1.pv2InputWatts'];
   const pv1Temp = status['20_1.pv1Temp'];
   const pv2Temp = status['20_1.pv2Temp'];
-
+  const upperLimit = status['20_1.upperLimit']
   const batErrCode = status['20_1.batErrCode'];
 
 //log (supplyPriority)
@@ -217,7 +217,7 @@ setState(path + ".pv2InputWatts", pv2InputWatts)
 setState(path + ".pv1Temp", pv1Temp)
 setState(path + ".pv2Temp", pv2Temp)
 setState(path + ".batErrCode",batErrCode)
-
+setState(path + '.upperLimit',upperLimit)
 //  return { supplyPriority, batSoc };
 }
 
@@ -420,6 +420,7 @@ function updateStatus() {
             initMyObjectAsNumber( serial + '.batSoc',0)
             initMyObjectAsNumber( serial + '.supplyPriority',0)
             initMyObjectAsNumber( serial + '.batErrCode',0)
+            initMyObjectAsNumber(serial + '.upperLimit',0)
         }
         getStatus(serial)
         updatePSWriteables(serial)
